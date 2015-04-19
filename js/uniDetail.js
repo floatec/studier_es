@@ -41,7 +41,8 @@ var readData = function () {
             "rankingU": rankingU,
             "studiengeange": studiengaenge,
             "comments": comments,
-            "studiengaenge": studiengaenge
+            "studiengaenge": studiengaenge,
+            "studierende":uni.studierende
         };
     });
 };
@@ -62,12 +63,13 @@ var fillUniDetailPage = function () {
     var ratingU5 = $('#ratingU5');
     var ratingU6 = $('#ratingU6');
     var detailBox = $('#detailBox');
-    var commentList = $('#commentList');
+    var detailBox2 = $('#detailBox2');
+    var commentSpin = $('#commentList');
     var studiengaengeBox=$('#studiengaengeBox');
     var map=$('#map');
     console.log(data.uni.rankingU)
-    header.html('<div class="col-lg-3 col-md-4 col-xs-4"><h1>'+data.uni.name + "</h1>"+(data.uni.art!=undefined?data.uni.art:'')+"</div>"+'<div style="margin: 5px" id="diagram-id-1" class="diagram col-lg-3 col-md-4 col-xs-4" data-circle-diagram=\'{    "percent": "'+(data.uni.ranking[6]/5.0*100)+'%",        "size": "150",        "borderWidth": "10",        "bgFill": "#cacaca",        "frFill": "#d9534f",        "textSize": "36",        "textColor": "#FFFFFF"}\'></div>' +
-        ''+(data.uni.rankingU[6]!=NaN?'<div style="margin: 5px" id="diagram-id-2" class="diagram col-lg-3 col-md-4 col-xs-4" data-circle-diagram=\'{    "percent": "'+(data.uni.rankingU[6]/5.0*100)+'%",        "size": "150",        "borderWidth": "10",        "bgFill": "#cacaca",        "frFill": "#5cb85c",        "textSize": "36",        "textColor": "#FFFFFF"}\'></div>':'')   );
+    header.html('<div class="col-lg-3 col-md-4 col-xs-4"><h1>'+data.uni.name + "</h1>"+(data.uni.art!=undefined?data.uni.art:'')+"</div>"+'<div style="margin: 5px" id="diagram-id-1" class="diagram col-lg-3 col-md-4 col-xs-3" data-circle-diagram=\'{    "percent": "'+Math.round(data.uni.ranking[6]/5.0*100)+'%",        "size": "150",        "borderWidth": "10",        "bgFill": "#cacaca",        "frFill": "#d9534f",        "textSize": "36",        "textColor": "#FFFFFF"}\'></div>' +
+        ''+(data.uni.rankingU[6]!=undefined?'<div style="margin: 5px" id="diagram-id-2" class="diagram col-lg-3 col-md-4 col-xs-3" data-circle-diagram=\'{    "percent": "'+Math.round(data.uni.rankingU[6]/5*100)+'%",        "size": "150",        "borderWidth": "10",        "bgFill": "#cacaca",        "frFill": "#5cb85c",        "textSize": "36",        "textColor": "#FFFFFF"}\'></div>':'')   );
     $('#diagram-id-1').circleDiagram();
     $('#diagram-id-2').circleDiagram();
     rating1.text(data.uni.ranking[0]);
@@ -83,16 +85,36 @@ var fillUniDetailPage = function () {
     ratingU5.text(data.uni.rankingU[4]);
     ratingU6.text(data.uni.rankingU[5]);
     studiengaengeBox.html(data.uni.studiengaenge);
-    map.html('<img src="http://maps.googleapis.com/maps/api/staticmap?center='+data.uni.name+'&zoom=5&size=500x250&scale=1&sensor=false&maptype=roadmap&format=jpg&markers='+data.uni.name+'">')
+    map.html('<img width="100%" src="http://maps.googleapis.com/maps/api/staticmap?center='+data.uni.name+'&zoom=5&size=1000x250&scale=1&sensor=false&maptype=roadmap&format=jpg&markers='+data.uni.name+'">')
 
     if(data.uni.adresse != null && data.uni.adresse != undefined){
         detailBox.append(data.uni.adresse[0] + "<br>" + data.uni.adresse[1] + "<br>" + data.uni.adresse[2] + "<br>" + data.uni.adresse[3] + "<br>" + data.uni.adresse[4]+ "<br><a href='" + data.uni.adresse[5] +"'>"+ data.uni.adresse[5]+ "</a>");
     }
-    
-    for (var i = 0; i < data.uni.comments.length; i++) {
-        commentList.append('<li class="list-group-item">'+data.uni.comments[i]+'</li>');
+    if(data.uni.studierende != null && data.uni.studierende != undefined){
+        detailBox2.append( "Anzahl Studierende: " + data.uni.studierende);
     }
+
+    commentS=('<div id="myCarousel" class="carousel slide" data-ride="carousel"> <ol class="carousel-indicators">')
+    for (var i = 0; i < data.uni.comments.length; i++) {
+        commentS+=('<li data-target="#myCarousel" data-slide-to="'+i+'" class=""></li>');
+    }
+
+    commentS+=('</ol><div class="carousel-inner" role="listbox" >')
+
+
+
+    for (var i = 0; i < data.uni.comments.length; i++) {
+        if(i==0){
+            commentS+=('<div class="item active"><div style="margin: 140px"><b style="font-size: 18px">'+((''+data.uni.comments[i]).replace('.','. </b><br>').replace('<a class="readmore" href="','<br><a class="readmore" href="http://www.studycheck.de'))+'</div></div>');
+        }else{
+            commentS+=('<div class="item "><div style="margin: 140px"><b style="font-size: 18px">'+((''+data.uni.comments[i]).replace('.','. </b><br>').replace('<a class="readmore" href="','<br><a class="readmore" href="http://www.studycheck.de'))+'</div></div>');
+        }
+    }
+    commentS+=('<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span><span class="sr-only">Previous</span></a>' +
+        '<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span class="sr-only">Next</span> </a></div>')
+    commentSpin.append(commentS)
 };
+
 
 readData();
 fillUniDetailPage();

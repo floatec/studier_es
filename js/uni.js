@@ -30,6 +30,11 @@ var readData = function () {
                     studiengaenge += '<span class="btn btn-warning">'+uni.studiengaenge[j][0] + "</span>";
                 }
             }
+            for (var j = 5; j < (uni.studiengaenge.length); j++) {
+
+                    studiengaenge += '<!-- '+uni.studiengaenge[j][0] + " -->";
+
+            }
             studiengaengeFull=studiengaenge
             //studiengaenge=studiengaenge.substr(0,100)
             if(uni.studiengaenge.length>5){
